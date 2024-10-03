@@ -1,0 +1,153 @@
+<!--
+This Timer App includes following features:
+Input fields for hours, minutes, and seconds
+Start Pause and Reset buttons
+A display showing the current time remaining
+Visual feedback when the timer reaches zero
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer App</title>
+
+<!--define css for styling the application-->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #display {
+            font-size: 3rem;
+            margin: 1rem 0;
+        }
+        input {
+            font-size: 1rem;
+            padding: 0.5rem;
+            width: 50px;
+            margin: 0 0.5rem;
+        }
+        button {
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #pauseBtn {
+            background-color: #f44336;
+        }
+        #pauseBtn:hover {
+            background-color: #da190b;
+        }
+        #resetBtn {
+            background-color: #008CBA;
+        }
+        #resetBtn:hover {
+            background-color: #007399;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Timer App</h1>
+        <div id="display">00:00:00</div>
+        <div>
+            <!--input fields for hours minutes seconds-->
+            <input type="number" id="hours" min="0" max="23" value="0">
+            <input type="number" id="minutes" min="0" max="59" value="0">
+            <input type="number" id="seconds" min="0" max="59" value="0">
+        </div>
+        <button id="startBtn">Start</button>
+        <button id="pauseBtn">Pause</button>
+        <button id="resetBtn">Reset</button>
+    </div>
+    <!--define variables for necessary buttons and time input-->
+    <script>
+        const display = document.getElementById('display');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const hoursInput = document.getElementById('hours');
+        const minutesInput = document.getElementById('minutes');
+        const secondsInput = document.getElementById('seconds');
+
+        let timer;
+        let totalSeconds = 0;
+        let isRunning = false;
+
+        //function to display HH, MM and SS
+        //updateDisplay(): Updates the timer display.
+        function updateDisplay() {
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            display.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        //function to start timer
+        //startTimer(): Starts the countdown timer.
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                timer = setInterval(() => {
+                    if (totalSeconds > 0) {
+                        totalSeconds--;
+                        updateDisplay();
+                    } else {
+                        clearInterval(timer);
+                        isRunning = false;
+                        alert("Time's up!");
+                    }
+                }, 1000);
+            }
+        }
+        //function to pause timer
+        //pauseTimer(): Pauses the running timer
+        function pauseTimer() {
+            clearInterval(timer);
+            isRunning = false;
+        }
+        //function to resetTimer
+        //resetTimer(): Resets the timer and clears the input fields.
+        function resetTimer() {
+            clearInterval(timer);
+            isRunning = false;
+            totalSeconds = 0;
+            updateDisplay();
+            hoursInput.value = 0;
+            minutesInput.value = 0;
+            secondsInput.value = 0;
+        }
+        //define event listener for start, pause and reset time
+        startBtn.addEventListener('click', () => {
+            if (!isRunning) {
+                totalSeconds = parseInt(hoursInput.value) * 3600 + parseInt(minutesInput.value) * 60 + parseInt(secondsInput.value);
+                updateDisplay();
+                startTimer();
+            }
+        });
+        pauseBtn.addEventListener('click', pauseTimer);
+        resetBtn.addEventListener('click', resetTimer);
+    </script>
+</body>
+</html>
